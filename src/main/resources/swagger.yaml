@@ -1,0 +1,195 @@
+swagger: '2.0'
+
+info:
+  description: API para gerenciamento dos clientes na base de dados do banco in-memory - H2
+  version: 2.0.0
+  title: Clientes - CRUD
+  contact:
+    email: cassio.babilonia@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+host: localhost:8081
+
+basePath: /api/softplan/v1
+
+schemes:
+  - http
+
+x-types:
+  Sexo: &Sexo [M, F, OUTRO]
+
+paths:
+  /clientes:
+    get:
+      summary: Retorna os clientes existentes na base de dados.
+      description: Retorna os clientes existentes na base de dados - H2.
+      operationId: listarClientes
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Consulta realizada com sucesso.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ClienteResponse'
+        204:
+          description: Não existem clientes cadastrados na base de dados.
+        500:
+          description: Erro ao buscar clientes na base de dados.
+    post:
+      summary: Cria um novo cliente na base de dados.
+      description: Cria um novo cliente na base de dados - H2.
+      operationId: criarCliente
+      consumes:
+        - application/json
+      parameters:
+        - name: cliente
+          in: body
+          description: Cliente a ser criado na base de dados.
+          required: true
+          schema:
+            $ref: '#/definitions/ClienteRequest'
+      responses:
+        201:
+          description: Cliente criado com sucesso na base de dados.
+          schema:
+            $ref: '#/definitions/ClienteResponse'
+        500:
+          description: Erro ao criar cliente na base de dados.
+  /clientes/{idCliente}:
+    get:
+      summary: Retorna o cliente existente pelo ID na base de dados.
+      description: Retorna o cliente existente pelo ID na base de dados - H2.
+      operationId: listarCliente
+      produces:
+        - application/json
+      parameters:
+        - name: idCliente
+          in: path
+          description: ID do cliente na base de dados a ser exibido
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Cliente encontrado e exibido com sucesso.
+          schema:
+            $ref: '#/definitions/ClienteResponse'
+        404:
+          description: Cliente não encontrado.
+        500:
+          description: Erro ao buscar o cliente pelo ID na base de dados.
+    put:
+      summary: Edita o cliente passado como parâmetro (body) na base de dados.
+      description: Edita o cliente passado como parâmetro (body) na base de dados - H2.
+      operationId: editarCliente
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: idCliente
+          in: path
+          description: ID do cliente na base de dados a ser editado.
+          required: true
+          type: integer
+        - name: cliente
+          in: body
+          description: Cliente a ser editado na base de dados.
+          required: true
+          schema:
+            $ref: '#/definitions/ClienteRequest'
+      responses:
+        200:
+          description: Cliente editado com sucesso na base de dados.
+          schema:
+            $ref: '#/definitions/ClienteResponse'
+        404:
+          description: Cliente não encontrado na base de dados.
+        500:
+          description: Erro ao editar cliente na base de dados.
+    delete:
+      summary: Deleta o cliente existente pelo ID na base de dados.
+      description: Deleta o cliente existente pelo ID na base de dados - H2.
+      operationId: deletarCliente
+      parameters:
+        - name: idCliente
+          in: path
+          description: ID do cliente na base de dados a ser deletado.
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Cliente deletado com sucesso na base de dados.
+          schema:
+            $ref: '#/definitions/ClienteResponse'
+        404:
+          description: Cliente não encontrado na base de dados.
+        500:
+          description: Erro ao deletar o cliente pelo ID na base de dados.
+
+definitions:
+  Sexo:
+    type: string
+    description:
+      1 - M
+      2 - F
+      3 - OUTRO
+    enum: *Sexo
+  ClienteRequest:
+    type: object
+    required:
+      - nome
+      - dataNascimento
+      - cpf
+    properties:
+      nome:
+        type: string
+        example: 'Cassio Player'
+      sexo:
+        type: string
+        enum: *Sexo
+      email:
+        type: string
+        example: cassio.babilonia@gmail.com
+      dataNascimento:
+        type: string
+        example: '2018-10-10'
+      naturalidade:
+        type: string
+        example: 'Patos de Minas'
+      nacionalidade:
+        type: string
+        example: 'Brasil'
+      cpf:
+        type: string
+        example: '123.456.789-10'
+  ClienteResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 1
+      nome:
+        type: string
+        example: 'Cassio Player'
+      sexo:
+        type: string
+        enum: *Sexo
+      email:
+        type: string
+        example: cassio.babilonia@gmail.com
+      dataNascimento:
+        type: string
+        example: '2018-10-10'
+      naturalidade:
+        type: string
+        example: 'Patos de Minas'
+      nacionalidade:
+        type: string
+        example: 'Brasil'
+      cpf:
+        type: string
+        example: '123.456.789-10'
