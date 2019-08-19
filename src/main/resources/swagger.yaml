@@ -123,21 +123,12 @@ paths:
       responses:
         200:
           description: Cliente deletado com sucesso na base de dados.
-          schema:
-            $ref: '#/definitions/ClienteResponse'
         404:
           description: Cliente não encontrado na base de dados.
         500:
           description: Erro ao deletar o cliente pelo ID na base de dados.
 
 definitions:
-  Sexo:
-    type: string
-    description:
-      1 - M
-      2 - F
-      3 - OUTRO
-    enum: *Sexo
   ClienteRequest:
     type: object
     required:
@@ -183,7 +174,8 @@ definitions:
         example: cassio.babilonia@gmail.com
       dataNascimento:
         type: string
-        example: '2018-10-10'
+        format: date
+        example: '2017-07-21T17:32:28Z'
       naturalidade:
         type: string
         example: 'Patos de Minas'
@@ -193,3 +185,11 @@ definitions:
       cpf:
         type: string
         example: '123.456.789-10'
+      dataCadastro:
+        type: string
+        format: date-time
+        example: '2017-07-21T17:32:28Z'
+      dataAtualizacao:
+        type: string
+        format: date-time
+        example: '2017-07-21T17:32:28Z'

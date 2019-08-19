@@ -1,10 +1,11 @@
 package com.cassio.player.models.db;
 
-import com.cassio.player.models.Sexo;
+import com.cassio.player.models.ClienteResponse;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Entity
 @Data
@@ -21,14 +22,13 @@ public class Cliente {
 
     @Column(name = "sexo")
     @Enumerated(EnumType.STRING)
-    private Sexo sexo;
+    private ClienteResponse.SexoEnum sexo;
 
     @Column(name = "email")
     private String email;
 
     @Column(name = "data_nascimento")
-    @Temporal(TemporalType.DATE)
-    private Date dataNascimento;
+    private LocalDate dataNascimento;
 
     @Column(name = "naturalidade")
     private String naturalidade;
@@ -40,10 +40,8 @@ public class Cliente {
     private String cpf;
 
     @Column(name = "data_cadastro")
-    @Temporal(value = TemporalType.TIMESTAMP)
-    private Date dataCadastro;
+    private OffsetDateTime dataCadastro;
 
     @Column(name = "data_atualizacao")
-    @Temporal(value = TemporalType.TIMESTAMP)
-    private Date dataAtualizacao;
+    private OffsetDateTime dataAtualizacao;
 }

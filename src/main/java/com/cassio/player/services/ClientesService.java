@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClientesService {
@@ -18,73 +20,87 @@ public class ClientesService {
     @Inject
     private ClienteRepository clienteRepository;
 
-    private static final String SUCCESS = "success";
-    private static final String ERROR = "error";
-
     public ResponseEntity<List<ClienteResponse>> findAll() {
-        List<ClienteResponse> listaResponse = new ArrayList<>();
-        List<Cliente> listaClientes = clienteRepository.findAll();
-        if (listaClientes.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        } else {
-            BeanUtils.copyProperties(listaResponse, listaClientes);
+        try {
+            List<ClienteResponse> listaResponse = new ArrayList<>();
+
+            List<Cliente> listaClientes = clienteRepository.findAll();
+
+            if (listaClientes.isEmpty()) {
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            }
+
+            listaClientes.forEach(cliente -> {
+                ClienteResponse clienteResponse = new ClienteResponse();
+                BeanUtils.copyProperties(cliente, clienteResponse);
+                listaResponse.add(clienteResponse);
+            });
+            return new ResponseEntity<>(listaResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(listaResponse, HttpStatus.CREATED);
     }
 
-    public Cliente findById(Long id) {
-        return clienteRepository.findById(id).get();
+    public ResponseEntity<ClienteResponse> findById(Integer id) {
+        try {
+            Optional<Cliente> cliente = clienteRepository.findById(id);
+            if (!cliente.isPresent()) {
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            }
+
+            ClienteResponse clienteResponse = new ClienteResponse();
+            BeanUtils.copyProperties(cliente.get(), clienteResponse);
+            return new ResponseEntity<>(clienteResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public ResponseEntity<ClienteResponse> save(ClienteRequest clienteRequest) {
         try {
-            Cliente cliente = this.clienteRequestParaCliente(clienteRequest);
+            Cliente cliente = new Cliente();
+            BeanUtils.copyProperties(clienteRequest, cliente);
             clienteRepository.save(cliente);
 
             ClienteResponse clienteResponse = new ClienteResponse();
-            BeanUtils.copyProperties(clienteResponse, cliente);
+            BeanUtils.copyProperties(cliente, clienteResponse);
             return new ResponseEntity<>(clienteResponse, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    private Cliente clienteRequestParaCliente(ClienteRequest clienteRequest) {
-        Cliente cliente = new Cliente();
-        BeanUtils.copyProperties(cliente, clienteRequest);
-        return cliente;
-    }
-
-    public ResponseEntity<Map<String, Object>> update(Cliente product, Long id) {
+    public ResponseEntity<ClienteResponse> update(Integer id, ClienteRequest clienteRequest) {
         try {
-            Map<String, Object> result = new HashMap<>();
+            Optional<Cliente> cliente = clienteRepository.findById(id);
+            if (!cliente.isPresent()) {
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            }
 
-            Cliente cliente = clienteRepository.findById(id).get();
-            cliente.setNome(product.getNome());
-            clienteRepository.saveAndFlush(cliente);
+            BeanUtils.copyProperties(clienteRequest, cliente);
 
-            result.put(SUCCESS, true);
+            clienteRepository.saveAndFlush(cliente.get());
 
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            ClienteResponse clienteResponse = new ClienteResponse();
+            BeanUtils.copyProperties(cliente, clienteResponse);
+            return new ResponseEntity<>(clienteResponse, HttpStatus.OK);
         } catch (Exception e) {
-            Map<String, Object> result = new HashMap<>();
-            result.put(ERROR, e.getMessage());
-            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<Map<String, Object>> deleteById(Long id) {
+    public ResponseEntity<Void> deleteById(Integer id) {
         try {
-            Map<String, Object> result = new HashMap<>();
+            Optional<Cliente> cliente = clienteRepository.findById(id);
+            if (!cliente.isPresent()) {
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            }
 
             clienteRepository.deleteById(id);
-            result.put(SUCCESS, true);
 
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.OK);
         } catch (Exception e) {
-            Map<String, Object> result = new HashMap<>();
-            result.put(ERROR, e.getMessage());
-            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
