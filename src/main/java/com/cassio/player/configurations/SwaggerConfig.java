@@ -29,7 +29,7 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.cassio.player.controllers"))
                 .build()
-                .pathMapping("/api/softplan/v1")
+                .pathMapping("/")
                 .apiInfo(this.apiInfo());
     }
 
