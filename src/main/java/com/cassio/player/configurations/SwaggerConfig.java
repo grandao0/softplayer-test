@@ -1,5 +1,6 @@
 package com.cassio.player.configurations;
 
+import com.cassio.player.constants.ServiceConstants;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,9 +28,9 @@ public class SwaggerConfig {
     public Docket productApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.cassio.player.controllers"))
+                .apis(RequestHandlerSelectors.basePackage(ServiceConstants.CONTROLLERS_BASE_PACKAGE))
                 .build()
-                .pathMapping("/")
+                .pathMapping(ServiceConstants.SWAGGER_PATH)
                 .apiInfo(this.apiInfo());
     }
 
@@ -37,8 +38,8 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title(this.title)
                 .description(this.description)
-                .termsOfServiceUrl("https://github.com/grandao0")
-                .version("1.0")
+                .termsOfServiceUrl(ServiceConstants.GIT_URL)
+                .version(ServiceConstants.VERSION_NUMBER)
                 .build();
     }
 }

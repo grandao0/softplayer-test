@@ -1,6 +1,5 @@
 package com.cassio.player.controllers;
 
-import com.cassio.player.interfaces.RestApiController;
 import com.cassio.player.models.ClienteRequest;
 import com.cassio.player.models.ClienteResponse;
 import com.cassio.player.services.ClientesService;
@@ -11,7 +10,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 @RestController
-public class ClientesApiController implements RestApiController, com.cassio.player.controllers.ClientesApi {
+public class ClientesApiController implements com.cassio.player.controllers.ClientesApi {
 
     @Inject
     private ClientesService clientesService;

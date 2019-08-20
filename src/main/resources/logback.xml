@@ -1,5 +1,5 @@
 <configuration>
-    <contextName>softplan</contextName>
+    <contextName>softplayer</contextName>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -19,7 +19,9 @@
             <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
-            <pattern>{"timestamp":"%date{YYYY-MM-dd HH:mm:ss}", "service":"${CONTEXT_NAME}", "thread":"[%thread]", "level":"%level", "meta":%msg}%n</pattern>
+            <pattern>{"timestamp":"%date{YYYY-MM-dd HH:mm:ss}", "service":"${CONTEXT_NAME}", "thread":"[%thread]",
+                "level":"%level", "meta":%msg}%n
+            </pattern>
         </encoder>
     </appender>
 
@@ -33,12 +35,14 @@
             <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
-            <pattern>{"timestamp":"%date{YYYY-MM-dd HH:mm:ss}", "service":"${CONTEXT_NAME}", "thread":"[%thread]", "level":"%level", "meta":%msg}%n</pattern>
+            <pattern>{"timestamp":"%date{YYYY-MM-dd HH:mm:ss}", "service":"${CONTEXT_NAME}", "thread":"[%thread]",
+                "level":"%level", "meta":%msg}%n
+            </pattern>
         </encoder>
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="FILE" />
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
