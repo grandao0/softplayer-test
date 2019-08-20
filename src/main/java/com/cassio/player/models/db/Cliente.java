@@ -1,6 +1,6 @@
 package com.cassio.player.models.db;
 
-import com.cassio.player.models.ClienteResponse;
+import com.cassio.player.models.Sexo;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -22,7 +22,7 @@ public class Cliente {
 
     @Column(name = "sexo")
     @Enumerated(EnumType.STRING)
-    private ClienteResponse.SexoEnum sexo;
+    private Sexo sexo;
 
     @Column(name = "email")
     private String email;
@@ -44,4 +44,10 @@ public class Cliente {
 
     @Column(name = "data_atualizacao")
     private OffsetDateTime dataAtualizacao;
+
+    @PrePersist
+    private void prePersist() {
+        this.setDataCadastro(OffsetDateTime.now());
+        this.setDataAtualizacao(OffsetDateTime.now());
+    }
 }

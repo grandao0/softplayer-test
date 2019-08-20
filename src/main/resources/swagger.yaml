@@ -17,9 +17,6 @@ basePath: /api/softplan/v1
 schemes:
   - http
 
-x-types:
-  Sexo: &Sexo [M, F, OUTRO]
-
 paths:
   /clientes:
     get:
@@ -127,8 +124,21 @@ paths:
           description: Cliente não encontrado na base de dados.
         500:
           description: Erro ao deletar o cliente pelo ID na base de dados.
+  /source:
+    get:
+      summary: Retorna o link do projeto no github com o código fonte do projeto desenvolvido
+      description: Retorna o link do projeto no github com o código fonte do projeto desenvolvido
+      operationId: listarLinkCodigoFonte
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Link do projeto no github com o código fonte do projeto desenvolvido exibido com sucesso.
 
 definitions:
+  Sexo:
+    type: string
+    enum: [M, F, OUTRO]
   ClienteRequest:
     type: object
     required:
@@ -141,7 +151,7 @@ definitions:
         example: 'Cassio Player'
       sexo:
         type: string
-        enum: *Sexo
+        example: M
       email:
         type: string
         example: cassio.babilonia@gmail.com
@@ -156,6 +166,7 @@ definitions:
         example: 'Brasil'
       cpf:
         type: string
+        pattern: '^\d{3}\.\d{3}\.\d{3}\-\d{2}$'
         example: '123.456.789-10'
   ClienteResponse:
     type: object
@@ -168,7 +179,7 @@ definitions:
         example: 'Cassio Player'
       sexo:
         type: string
-        enum: *Sexo
+        example: F
       email:
         type: string
         example: cassio.babilonia@gmail.com

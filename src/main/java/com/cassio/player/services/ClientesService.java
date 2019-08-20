@@ -1,5 +1,6 @@
 package com.cassio.player.services;
 
+import com.cassio.player.constants.ServiceConstants;
 import com.cassio.player.models.ClienteRequest;
 import com.cassio.player.models.ClienteResponse;
 import com.cassio.player.models.db.Cliente;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,6 +64,8 @@ public class ClientesService {
         try {
             Cliente cliente = new Cliente();
             BeanUtils.copyProperties(clienteRequest, cliente);
+            cliente.setDataNascimento(LocalDate.parse(clienteRequest.getDataNascimento(), ServiceConstants.formatter));
+
             clienteRepository.save(cliente);
 
             ClienteResponse clienteResponse = new ClienteResponse();
@@ -82,6 +86,7 @@ public class ClientesService {
 
             Cliente clienteUpdate = cliente.get();
             BeanUtils.copyProperties(clienteRequest, clienteUpdate);
+            clienteUpdate.setDataNascimento(LocalDate.parse(clienteRequest.getDataNascimento(), ServiceConstants.formatter));
 
             clienteRepository.saveAndFlush(clienteUpdate);
 
