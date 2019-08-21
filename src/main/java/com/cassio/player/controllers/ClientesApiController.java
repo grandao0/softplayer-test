@@ -62,7 +62,7 @@ public class ClientesApiController {
     @ApiResponses(value = {@ApiResponse(code = 201, message = "Cliente criado com sucesso na base de dados."),
             @ApiResponse(code = 500, message = "Erro ao criar cliente na base de dados.")})
     @PostMapping("/clientes")
-    public ResponseEntity<?> criarCliente(@Valid ClienteRequest cliente) throws URISyntaxException {
+    public ResponseEntity<?> criarCliente(@Valid @RequestBody ClienteRequest cliente) throws URISyntaxException {
         Resource<Cliente> resource = clientesService.save(cliente);
 
         return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);
@@ -74,7 +74,7 @@ public class ClientesApiController {
             @ApiResponse(code = 404, message = "Cliente não encontrado na base de dados."),
             @ApiResponse(code = 500, message = "Erro ao editar cliente na base de dados.")})
     @PutMapping("/clientes/{id}")
-    public ResponseEntity<?> editarCliente(Integer idCliente, @Valid ClienteRequest cliente) throws URISyntaxException {
+    public ResponseEntity<?> editarCliente(Integer idCliente, @Valid @RequestBody ClienteRequest cliente) throws URISyntaxException {
         Resource<Cliente> resource = clientesService.update(idCliente, cliente);
 
         return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);

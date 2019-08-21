@@ -58,7 +58,12 @@ Quick summary
 
 	+ H2 in-memory database
 
-* Example of calls:
+* Front-end
+
+    + Access the Front-end on a browser in the URL http://localhost:8080/api/softplan/v1/index.html
+    + You may be prompted a user and password. The username is admin and the password is softplayer
+
+* Example of Back-end calls:
 
 	+ After the application is running, open the browser and type http://localhost:8080/api/softplan/v1/swagger-ui.html
 	+ You will be prompted a user and password. The username is admin and the password is softplayer

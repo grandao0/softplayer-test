@@ -1,0 +1,48 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>Cliente</h3>
+        <div align="right">
+            <button class="btn btn-primary" ng-click="go('/list')">Voltar</button>
+        </div>
+    </div>
+    <div class="panel-body">
+        <form ng-submit="save()">
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label>Nome</label>
+                    <input type="text" class="form-control" maxlength="40" required ng-model="cliente.nome"/>
+                </div>
+                <div class="form-group col-md-4">
+                    <label>Sexo</label>
+                    <input type="text" class="form-control" maxlength="50" ng-model="cliente.sexo"/>
+                </div>
+                <div class="form-group col-md-4">
+                    <label>E-mail</label>
+                    <input type="text" class="form-control" maxlength="30" ng-model="cliente.email"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-3">
+                    <label>Data Nascimento</label>
+                    <input type="text" class="form-control" required ng-model="cliente.dataNascimento"/>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>Naturalidade</label>
+                    <input type="text" class="form-control" ng-model="cliente.naturalidade"/>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>Nacionalidade</label>
+                    <input type="text" class="form-control" ng-model="cliente.nacionalidade"/>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>CPF</label>
+                    <input type="text" class="form-control numeric" required ng-model="cliente.cpf"/>
+                </div>
+            </div>
+            <div align="right">
+                <input type="submit" class="btn btn-success" value="Salvar"/>
+            </div>
+            <span ng-model="msg"></span>
+        </form>
+    </div>
+</div>

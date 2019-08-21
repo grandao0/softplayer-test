@@ -8,6 +8,7 @@ import com.cassio.player.exceptions.ClienteNaoEncontradoException;
 import com.cassio.player.exceptions.ClientesNaoEncontradosException;
 import com.cassio.player.exceptions.ErroInesperadoException;
 import com.cassio.player.models.ClienteRequest;
+import com.cassio.player.models.enums.Sexo;
 import com.cassio.player.models.db.Cliente;
 import com.cassio.player.repositories.ClienteRepository;
 import com.cassio.player.utils.Messages;
@@ -71,6 +72,9 @@ public class ClientesService {
             Cliente cliente = new Cliente();
             BeanUtils.copyProperties(clienteRequest, cliente);
             cliente.setDataNascimento(LocalDate.parse(clienteRequest.getDataNascimento(), ServiceConstants.formatter));
+            if (clienteRequest.getSexo() != null) {
+                cliente.setSexo(Sexo.valueOf(clienteRequest.getSexo()));
+            }
 
             clienteRepository.save(cliente);
 
@@ -91,6 +95,9 @@ public class ClientesService {
             Cliente clienteUpdate = cliente.get();
             BeanUtils.copyProperties(clienteRequest, clienteUpdate);
             clienteUpdate.setDataNascimento(LocalDate.parse(clienteRequest.getDataNascimento(), ServiceConstants.formatter));
+            if (clienteRequest.getSexo() != null) {
+                clienteUpdate.setSexo(Sexo.valueOf(clienteRequest.getSexo()));
+            }
 
             clienteRepository.saveAndFlush(clienteUpdate);
 
