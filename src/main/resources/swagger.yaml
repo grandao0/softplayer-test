@@ -31,7 +31,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/ClienteResponse'
+              $ref: '#/definitions/Cliente'
         204:
           description: Não existem clientes cadastrados na base de dados.
         500:
@@ -53,7 +53,7 @@ paths:
         201:
           description: Cliente criado com sucesso na base de dados.
           schema:
-            $ref: '#/definitions/ClienteResponse'
+            $ref: '#/definitions/Cliente'
         500:
           description: Erro ao criar cliente na base de dados.
   /clientes/{idCliente}:
@@ -73,7 +73,7 @@ paths:
         200:
           description: Cliente encontrado e exibido com sucesso.
           schema:
-            $ref: '#/definitions/ClienteResponse'
+            $ref: '#/definitions/Cliente'
         404:
           description: Cliente não encontrado.
         500:
@@ -102,7 +102,7 @@ paths:
         200:
           description: Cliente editado com sucesso na base de dados.
           schema:
-            $ref: '#/definitions/ClienteResponse'
+            $ref: '#/definitions/Cliente'
         404:
           description: Cliente não encontrado na base de dados.
         500:
@@ -134,6 +134,8 @@ paths:
       responses:
         200:
           description: Link do projeto no github com o código fonte do projeto desenvolvido exibido com sucesso.
+          schema:
+            $ref: '#/definitions/SourceResponse'
 
 definitions:
   Sexo:
@@ -168,7 +170,7 @@ definitions:
         type: string
         pattern: '^\d{3}\.\d{3}\.\d{3}\-\d{2}$'
         example: '123.456.789-10'
-  ClienteResponse:
+  Cliente:
     type: object
     properties:
       id:
@@ -204,3 +206,9 @@ definitions:
         type: string
         format: date-time
         example: '2017-07-21T17:32:28Z'
+  SourceResponse:
+    type: object
+    properties:
+      url:
+        type: string
+        example: 'http://url.to.source'

@@ -1,116 +1,118 @@
 package com.cassio.player.services;
 
-import com.cassio.player.constants.ServiceConstants;
-import com.cassio.player.models.ClienteRequest;
-import com.cassio.player.models.ClienteResponse;
-import com.cassio.player.models.db.Cliente;
-import com.cassio.player.repositories.ClienteRepository;
-import org.springframework.beans.BeanUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
+import org.springframework.stereotype.Service;
+
+import com.cassio.player.assemblers.ClienteResourceAssembler;
+import com.cassio.player.constants.MessageConstants;
+import com.cassio.player.constants.ServiceConstants;
+import com.cassio.player.controllers.ClientesApiController;
+import com.cassio.player.exceptions.ClienteNaoEncontradoException;
+import com.cassio.player.exceptions.ClientesNaoEncontradosException;
+import com.cassio.player.exceptions.ErroInesperadoException;
+import com.cassio.player.models.ClienteRequest;
+import com.cassio.player.models.db.Cliente;
+import com.cassio.player.repositories.ClienteRepository;
+import com.cassio.player.utils.Messages;
 
 @Service
 public class ClientesService {
 
-    @Inject
-    private ClienteRepository clienteRepository;
+	@Inject
+	private ClienteRepository clienteRepository;
 
-    public ResponseEntity<List<ClienteResponse>> findAll() {
-        try {
-            List<ClienteResponse> listaResponse = new ArrayList<>();
+	@Inject
+	private ClienteResourceAssembler assembler;
 
-            List<Cliente> listaClientes = clienteRepository.findAll();
+	@Inject
+	private Messages messages;
 
-            if (listaClientes.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
+	public Resources<Resource<Cliente>> findAll() {
+		List<Resource<Cliente>> listaClientes = clienteRepository.findAll()
+				.stream()
+				.map(assembler::toResource)
+				.collect(Collectors.toList());
 
-            listaClientes.forEach(cliente -> {
-                ClienteResponse clienteResponse = new ClienteResponse();
-                BeanUtils.copyProperties(cliente, clienteResponse);
-                listaResponse.add(clienteResponse);
-            });
-            return new ResponseEntity<>(listaResponse, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+		if (listaClientes.isEmpty()) {
+			throw new ClientesNaoEncontradosException(messages.get(MessageConstants.ERRO_BUSCAR_CLIENTES_LISTA_VAZIA));
+		}
 
-    public ResponseEntity<ClienteResponse> findById(Integer id) {
-        try {
-            Optional<Cliente> cliente = clienteRepository.findById(id);
-            if (!cliente.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+		try {
+			return new Resources<>(listaClientes, linkTo(methodOn(ClientesApiController.class).listarClientes()).withSelfRel());
+		} catch (Exception e) {
+			throw new ErroInesperadoException(messages.get(MessageConstants.ERRO_BUSCAR_CLIENTES));
+		}
+	}
 
-            ClienteResponse clienteResponse = new ClienteResponse();
-            BeanUtils.copyProperties(cliente.get(), clienteResponse);
-            return new ResponseEntity<>(clienteResponse, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+	public Resource<Cliente> findById(Integer id) {
+		Cliente cliente = clienteRepository.findById(id)
+				.orElseThrow(() -> new ClienteNaoEncontradoException(id));
+		try {
+			return assembler.toResource(cliente);
+		} catch (Exception e) {
+			throw new ErroInesperadoException(messages.get(MessageConstants.ERRO_BUSCAR_CLIENTE_POR_ID));
+		}
+	}
 
-    @Transactional
-    public ResponseEntity<ClienteResponse> save(ClienteRequest clienteRequest) {
-        try {
-            Cliente cliente = new Cliente();
-            BeanUtils.copyProperties(clienteRequest, cliente);
-            cliente.setDataNascimento(LocalDate.parse(clienteRequest.getDataNascimento(), ServiceConstants.formatter));
+	@Transactional
+	public Resource<Cliente> save(ClienteRequest clienteRequest) {
+		try {
+			Cliente cliente = new Cliente();
+			BeanUtils.copyProperties(clienteRequest, cliente);
+			cliente.setDataNascimento(LocalDate.parse(clienteRequest.getDataNascimento(), ServiceConstants.formatter));
 
-            clienteRepository.save(cliente);
+			clienteRepository.save(cliente);
 
-            ClienteResponse clienteResponse = new ClienteResponse();
-            BeanUtils.copyProperties(cliente, clienteResponse);
-            return new ResponseEntity<>(clienteResponse, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+			return assembler.toResource(cliente);
+		} catch (Exception e) {
+			throw new ErroInesperadoException(messages.get(MessageConstants.ERRO_SALVAR_CLIENTE));
+		}
+	}
 
-    @Transactional
-    public ResponseEntity<ClienteResponse> update(Integer id, ClienteRequest clienteRequest) {
-        try {
-            Optional<Cliente> cliente = clienteRepository.findById(id);
-            if (!cliente.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+	@Transactional
+	public Resource<Cliente> update(Integer id, ClienteRequest clienteRequest) {
+		Optional<Cliente> cliente = clienteRepository.findById(id);
+		if (!cliente.isPresent()) {
+			throw new ClienteNaoEncontradoException(id);
+		}
 
-            Cliente clienteUpdate = cliente.get();
-            BeanUtils.copyProperties(clienteRequest, clienteUpdate);
-            clienteUpdate.setDataNascimento(LocalDate.parse(clienteRequest.getDataNascimento(), ServiceConstants.formatter));
+		try {
+			Cliente clienteUpdate = cliente.get();
+			BeanUtils.copyProperties(clienteRequest, clienteUpdate);
+			clienteUpdate.setDataNascimento(LocalDate.parse(clienteRequest.getDataNascimento(), ServiceConstants.formatter));
 
-            clienteRepository.saveAndFlush(clienteUpdate);
+			clienteRepository.saveAndFlush(clienteUpdate);
 
-            ClienteResponse clienteResponse = new ClienteResponse();
-            BeanUtils.copyProperties(clienteUpdate, clienteResponse);
-            return new ResponseEntity<>(clienteResponse, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+			return assembler.toResource(clienteUpdate);
+		} catch (Exception e) {
+			throw new ErroInesperadoException(messages.get(MessageConstants.ERRO_SALVAR_CLIENTE));
+		}
+	}
 
-    @Transactional
-    public ResponseEntity<Void> deleteById(Integer id) {
-        try {
-            Optional<Cliente> cliente = clienteRepository.findById(id);
-            if (!cliente.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+	@Transactional
+	public void deleteById(Integer id) {
+		Optional<Cliente> cliente = clienteRepository.findById(id);
+		if (!cliente.isPresent()) {
+			throw new ClienteNaoEncontradoException(id);
+		}
 
-            clienteRepository.deleteById(id);
-
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+		try {
+			clienteRepository.deleteById(id);
+		} catch (Exception e) {
+			throw new ErroInesperadoException(messages.get(MessageConstants.ERRO_DELETAR_CLIENTE));
+		}
+	}
 }
