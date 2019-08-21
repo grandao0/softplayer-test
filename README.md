@@ -16,7 +16,8 @@ Quick summary
 
 	+ Docker is used to build and start the application
 	+ An embedded in-memory database is used: H2
-	+ The database and tables creation is done by the application
+	+ The database and table creation is done by the application
+	+ To use the Basic Authentication for the endpoints and to log in the swagger-ui the username is admin and the password is softplayer **IMPORTANT!**
 
 * Maven POM Configuration
 
@@ -57,14 +58,10 @@ Quick summary
 
 	+ H2 in-memory database
 
-* How to run tests:
-
-	+ Before running the tests, choose the test profile by changing the value of spring.profiles.active in the application.properties file to test or by via JVM system parameter: -Dspring.profiles.active=test
-	+ The tests must be started with the Maven command: mvn test
-
 * Example of calls:
 
 	+ After the application is running, open the browser and type http://localhost:8080/api/softplan/v1/swagger-ui.html
+	+ You will be prompted a user and password. The username is admin and the password is softplayer
 	+ Swagger UI let's you make calls easily by choosing the desired Operations for each Entity in the most intuitive and easy way
 	+ Choose the Client Resource for Client operations
 	+ Choose the Source Resource for source URL

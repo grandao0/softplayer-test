@@ -1,16 +1,16 @@
 package com.cassio.player.utils;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-
 @Component
 public class Messages {
 
-    @Autowired
+    @Inject
     private MessageSource messageSource;
 
     private MessageSourceAccessor accessor;

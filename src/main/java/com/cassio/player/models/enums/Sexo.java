@@ -1,4 +1,4 @@
-package com.cassio.player.models.db;
+package com.cassio.player.models.enums;
 
 public enum Sexo {
 

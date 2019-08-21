@@ -17,6 +17,10 @@ basePath: /api/softplan/v1
 schemes:
   - http
 
+securityDefinitions:
+  basicAuth:
+    type: basic
+
 paths:
   /clientes:
     get:
@@ -49,6 +53,8 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/ClienteRequest'
+      security:
+        - basicAuth: []
       responses:
         201:
           description: Cliente criado com sucesso na base de dados.
@@ -69,6 +75,8 @@ paths:
           description: ID do cliente na base de dados a ser exibido
           required: true
           type: integer
+      security:
+        - basicAuth: []
       responses:
         200:
           description: Cliente encontrado e exibido com sucesso.
@@ -98,6 +106,8 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/ClienteRequest'
+      security:
+        - basicAuth: []
       responses:
         200:
           description: Cliente editado com sucesso na base de dados.
@@ -117,6 +127,8 @@ paths:
           description: ID do cliente na base de dados a ser deletado.
           required: true
           type: integer
+      security:
+        - basicAuth: []
       responses:
         200:
           description: Cliente deletado com sucesso na base de dados.

@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
+import com.cassio.player.models.enums.Sexo;
+
 import lombok.Data;
 
 @Entity
