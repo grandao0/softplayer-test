@@ -14,7 +14,7 @@ Quick summary
 
 * Summary of set up:
 
-	+ Docker is used to build and start the application
+	+ Docker is used to build and start the application (docker run -p 8080:8080 -t granda0/softplayer-test)
 	+ An embedded in-memory database is used: H2
 	+ The database and table creation is done by the application
 	+ To use the Basic Authentication for the endpoints and to log in the swagger-ui the username is admin and the password is softplayer **IMPORTANT!**
